@@ -1,11 +1,27 @@
 import time
 import Adafruit_DHT
-import Adafruit_ADS1x15  # For ADC-based gas sensors (MQ7, MQ131)
+import Adafruit_ADS1x15  # ADC for gas sensors (MQ2, MQ7, MQ131)
 import Adafruit_BMP.BMP085 as BMP085
 import serial
 
 class MQ2:
     def __init__(self, adc_channel=0, adc_address=0x48):
+        self.adc = Adafruit_ADS1x15.ADS1115(address=adc_address)
+        self.channel = adc_channel
+
+    def read_gas_level(self):
+        return self.adc.read_adc(self.channel, gain=1)
+
+class MQ7:
+    def __init__(self, adc_channel=1, adc_address=0x48):  # Assigned to ADC channel 1
+        self.adc = Adafruit_ADS1x15.ADS1115(address=adc_address)
+        self.channel = adc_channel
+
+    def read_gas_level(self):
+        return self.adc.read_adc(self.channel, gain=1)
+
+class MQ131:
+    def __init__(self, adc_channel=2, adc_address=0x48):  # Assigned to ADC channel 2
         self.adc = Adafruit_ADS1x15.ADS1115(address=adc_address)
         self.channel = adc_channel
 
@@ -43,11 +59,3 @@ class NEO6M:
                 latitude = gps_data[2]
                 longitude = gps_data[4]
                 return {"latitude": latitude, "longitude": longitude}
-
-class ADCGasSensor:
-    def __init__(self, channel, adc_address=0x48):
-        self.adc = Adafruit_ADS1x15.ADS1115(address=adc_address)
-        self.channel = channel
-
-    def read_sensor(self):
-        return self.adc.read_adc(self.channel, gain=1)
