@@ -1,18 +1,18 @@
 import time
 import json
-from sensor import MQ2, DHT11, BMP180, NEO6M, ADCGasSensor
-from fault_tolarance import FaultTolerance
+from sensors import MQ2, DHT11, BMP280, NEO6M, ADCGasSensor
+from fault_tolerance import FaultTolerance
 from data_logger import DataLogger
-from communication import Communicator
+#from communication import Communicator
 
 def main():
     print("🚀 Satellite System Initializing...")
 
     # Initialize modules
-    power_manager = PowerManager()
+ #   power_manager = PowerManager()
     fault_checker = FaultTolerance()
     data_logger = DataLogger()
-    communicator = Communicator()
+ #   communicator = Communicator()
 
     # Initialize sensors
     mq2 = MQ2()
@@ -26,7 +26,7 @@ def main():
         print("\n🔍 Running System Check...")
 
         # 1️⃣ **Power Management** (Decides sensor activation based on altitude)
-        power_status = power_manager.manage_power()
+        #power_status = power_manager.manage_power()
 
         # 2️⃣ **Run Fault Tolerance Checks**
         fault_checker.run_health_check()
@@ -47,9 +47,9 @@ def main():
         data_logger.log_data(sensor_data)
 
         # 5️⃣ **Transmit Data to Ground Station**
-        communicator.send_data(sensor_data)
+        #communicator.send_data(sensor_data)
 
-        print("✅ Data Collection & Transmission Complete")
+        #print("✅ Data Collection & Transmission Complete")
         print("-" * 50)
 
         time.sleep(10)  # Loop every 10 seconds

@@ -1,6 +1,6 @@
 import time
 import json
-from sensors import MQ2, DHT11, BMP180, NEO6M, ADCGasSensor
+from sensors import MQ2, MQ7, MQ131, DHT11, NEO6M, BMP280
 
 class FaultTolerance:
     def __init__(self, log_file="errors.json"):
@@ -10,11 +10,11 @@ class FaultTolerance:
         # Initialize sensors
         self.sensors = {
             "MQ2": MQ2(),
+            "MQ7": MQ7(),
+            "MQ131": MQ131(),
             "DHT11": DHT11(),
-            "BMP180": BMP180(),
             "NEO6M": NEO6M(),
-            "MQ7": ADCGasSensor(channel=1),
-            "MQ131": ADCGasSensor(channel=2)
+            "BMP280": BMP280()
         }
 
     def ensure_file_exists(self):
@@ -59,13 +59,9 @@ class FaultTolerance:
         """Run a full health check on all sensors."""
         health_status = {}
 
-        health_status["MQ2"] = self.check_sensor("MQ2", self.sensors["MQ2"].read_gas_level)
-        health_status["DHT11"] = self.check_sensor("DHT11", self.sensors["DHT11"].read_data)
-        health_status["BMP180_Pressure"] = self.check_sensor("BMP180", self.sensors["BMP180"].read_pressure)
-        health_status["BMP180_Altitude"] = self.check_sensor("BMP180", self.sensors["BMP180"].read_altitude)
-        health_status["GPS_Coordinates"] = self.check_sensor("NEO6M", self.sensors["NEO6M"].read_coordinates)
-        health_status["MQ7"] = self.check_sensor("MQ7", self.sensors["MQ7"].read_sensor)
-        health_status["MQ131"] = self.check_sensor("MQ131", self.sensors["MQ131"].read_sensor)
+        for sensor_name, sensor_obj in self.sensors.items():
+            if sensor_obj:
+                health_status[sensor_name] = self.check_sensor(sensor_name, getattr(sensor_obj, "read_gas_level", sensor_obj.read_data) if sensor_name != "BMP280" else sensor_obj.read_pressure)
 
         print("\n🔍 Sensor Health Check Completed:\n", health_status)
         return health_status
