@@ -1,8 +1,7 @@
 import time
 import json
-from sensors import MQ2, DHT11, BMP180, NEO6M, ADCGasSensor
-from power_management import PowerManager
-from fault_tolerance import FaultTolerance
+from sensor import MQ2, DHT11, BMP180, NEO6M, ADCGasSensor
+from fault_tolarance import FaultTolerance
 from data_logger import DataLogger
 from communication import Communicator
 
